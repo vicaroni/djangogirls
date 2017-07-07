@@ -72,6 +72,13 @@ class DetailTest(TestCase):
         resp = self.client.get(reverse('app:post_detail', args=(p.id,)))
         self.assertContains(resp, p.text)
 
+    def test_no_comments(self):
+        user = User.objects.create(username='admin')
+        p = Post.objects.create(author=user, title='Title', text='Text', published_date=timezone.now())
+        url = reverse('app:post_detail', args=(p.id,))
+        resp = self.client.get(url)
+        self.assertContains(resp, 'No comments here yet :(')
+
     def test_comment_nonappr(self):
         user = User.objects.create(username='admin')
         user.set_password('123456')
